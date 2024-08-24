@@ -7,19 +7,19 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { PostModel, PostsService } from './posts.service';
+import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  getPosts(): PostModel[] {
+  getPosts() {
     return this.postsService.getAllPosts();
   }
 
   @Get(':id')
-  getPost(@Param() id: number): PostModel {
+  getPost(@Param() id: number) {
     return this.postsService.getPostById(id);
   }
 
