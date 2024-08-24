@@ -3,41 +3,11 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { title } from 'process';
-
-interface PostModel {
-  id: number;
-  author: string;
-  title: string;
-  content: string;
-  likeCount: number;
-  commentCount: number;
-}
-
-let posts: PostModel[] = [
-  {
-    id: 1,
-    author: 'string;',
-    title: 'string;',
-    content: 'string;',
-    likeCount: 3,
-    commentCount: 3,
-  },
-  {
-    id: 2,
-    author: '2;',
-    title: 'string;',
-    content: 'string;',
-    likeCount: 3,
-    commentCount: 3,
-  },
-];
+import { PostModel, PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
@@ -45,18 +15,12 @@ export class PostsController {
 
   @Get()
   getPosts(): PostModel[] {
-    return posts;
+    return this.postsService.getAllPosts();
   }
 
   @Get(':id')
   getPost(@Param() id: number): PostModel {
-    const post = posts.find((post) => post.id === id);
-
-    if (!post) {
-      throw new NotFoundException();
-    }
-
-    return post;
+    return this.postsService.getPostById(id);
   }
 
   @Post()
@@ -65,18 +29,7 @@ export class PostsController {
     @Body('title') title: string,
     @Body('content') content: string,
   ) {
-    const post = {
-      id: posts[posts.length - 1].id + 1,
-      author,
-      title,
-      content,
-      likeCount: 0,
-      commentCount: 0,
-    };
-
-    posts = [...posts, post];
-
-    return post;
+    return this.postsService.createPost(author, title, content);
   }
 
   @Patch(':id')
@@ -86,33 +39,11 @@ export class PostsController {
     @Body('title') title?: string,
     @Body('content') content?: string,
   ) {
-    const post = posts.find((post) => post.id === id);
-
-    if (!post) {
-      throw new NotFoundException();
-    }
-
-    if (author) {
-      post.author = author;
-    }
-
-    if (title) {
-      post.author = title;
-    }
-
-    if (content) {
-      post.author = content;
-    }
-
-    posts = posts.map((prevPost) => (prevPost.id === id ? post : prevPost));
-
-    return post;
+    return this.postsService.updatePost(id, author, title, content);
   }
 
   @Delete(':id')
   deletePosts(@Param('id') id: number) {
-    posts = posts.filter((post) => post.id !== id);
-
-    return id;
+    return this.postsService.deletePost(id);
   }
 }
