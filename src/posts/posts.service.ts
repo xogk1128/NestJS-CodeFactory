@@ -49,6 +49,7 @@ export class PostsService {
       where: {
         id,
       },
+      relations: ['author'],
     });
 
     if (!post) {
