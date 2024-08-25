@@ -3,33 +3,33 @@ import { Repository } from 'typeorm';
 import { PostsModel } from './entities/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
-export interface PostModel {
-  id: number;
-  author: string;
-  title: string;
-  content: string;
-  likeCount: number;
-  commentCount: number;
-}
+// export interface PostModel {
+//   id: number;
+//   author: string;
+//   title: string;
+//   content: string;
+//   likeCount: number;
+//   commentCount: number;
+// }
 
-let posts: PostModel[] = [
-  {
-    id: 1,
-    author: 'string;',
-    title: 'string;',
-    content: 'string;',
-    likeCount: 3,
-    commentCount: 3,
-  },
-  {
-    id: 2,
-    author: '2;',
-    title: 'string;',
-    content: 'string;',
-    likeCount: 3,
-    commentCount: 3,
-  },
-];
+// let posts: PostModel[] = [
+//   {
+//     id: 1,
+//     author: 'string;',
+//     title: 'string;',
+//     content: 'string;',
+//     likeCount: 3,
+//     commentCount: 3,
+//   },
+//   {
+//     id: 2,
+//     author: '2;',
+//     title: 'string;',
+//     content: 'string;',
+//     likeCount: 3,
+//     commentCount: 3,
+//   },
+// ];
 
 @Injectable()
 export class PostsService {
@@ -39,7 +39,9 @@ export class PostsService {
   ) {}
 
   async getAllPosts() {
-    return this.postsRepository.find();
+    return this.postsRepository.find({
+      relations: ['author'],
+    });
   }
 
   async getPostById(id: number) {
@@ -56,9 +58,11 @@ export class PostsService {
     return post;
   }
 
-  async createPost(author: string, title: string, content: string) {
+  async createPost(authorId: number, title: string, content: string) {
     const post = this.postsRepository.create({
-      author,
+      author: {
+        id: authorId,
+      },
       title,
       content,
       likeCount: 0,
@@ -70,12 +74,7 @@ export class PostsService {
     return newPost;
   }
 
-  async updatePost(
-    postId: number,
-    author: string,
-    title: string,
-    content: string,
-  ) {
+  async updatePost(postId: number, title: string, content: string) {
     const post = await this.postsRepository.findOne({
       where: {
         id: postId,
@@ -86,16 +85,12 @@ export class PostsService {
       throw new NotFoundException();
     }
 
-    if (author) {
-      post.author = author;
-    }
-
     if (title) {
-      post.author = title;
+      post.title = title;
     }
 
     if (content) {
-      post.author = content;
+      post.content = content;
     }
 
     const newPost = await this.postsRepository.save(post);
