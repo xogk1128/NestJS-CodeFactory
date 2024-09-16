@@ -40,7 +40,7 @@ export class AuthService {
 
     const prefix = isBearer ? 'Bearer' : 'Basic';
 
-    if (splitToken.length !== 2 || splitToken[0] === prefix) {
+    if (splitToken.length !== 2 || splitToken[0] !== prefix) {
       throw new UnauthorizedException('잘못된 토큰입니다!');
     }
 
@@ -53,6 +53,8 @@ export class AuthService {
     const decoded = Buffer.from(base64String, 'base64').toString('utf8');
 
     const split = decoded.split(':');
+
+    console.log(split);
 
     if (split.length !== 2) {
       throw new UnauthorizedException('잘못된 유형의 토큰입니다.');
