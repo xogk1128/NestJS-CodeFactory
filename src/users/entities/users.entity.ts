@@ -22,6 +22,11 @@ export class UsersModel extends BaseModel {
   })
   nickname: string;
 
+  // @Expose()
+  // get nicknameAndEmail() {
+  //   return this.nickname + '/' + this.email;
+  // }
+
   @Column({
     unique: true,
   })
