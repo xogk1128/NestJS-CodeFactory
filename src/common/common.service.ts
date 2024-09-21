@@ -29,7 +29,19 @@ export class CommonService {
     dto: BasePaginationDto,
     repository: Repository<T>,
     overrideFindOptions: FindManyOptions<T> = {},
-  ) {}
+  ) {
+    const findOptions = this.composeFindOptions<T>(dto);
+
+    const [data, count] = await repository.findAndCount({
+      ...findOptions,
+      ...overrideFindOptions,
+    });
+
+    return {
+      data,
+      total: count,
+    };
+  }
 
   private async cursorPaginate<T extends BaseModel>(
     dto: BasePaginationDto,
@@ -233,7 +245,11 @@ export class CommonService {
       //   } else {
       //     options[filed] = FILTER_MAPPER[operator](value);
       //   }
-      options[filed] = FILTER_MAPPER[operator](value);
+      if (operator === 'i_like') {
+        options[filed] = FILTER_MAPPER[operator](`%${value}%`);
+      } else {
+        options[filed] = FILTER_MAPPER[operator](value);
+      }
     }
 
     return options;

@@ -60,7 +60,14 @@ export class PostsService {
   }
 
   async paginatePosts(dto: PaginatePostDto) {
-    return this.commonService.paginate(dto, this.postsRepository, {}, 'posts');
+    return this.commonService.paginate(
+      dto,
+      this.postsRepository,
+      {
+        relations: ['autor'],
+      },
+      'posts',
+    );
     // if (dto.page) {
     //   return this.pagePaginatePosts(dto);
     // } else {
