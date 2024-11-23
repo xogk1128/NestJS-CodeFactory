@@ -4,6 +4,7 @@ import { BasicTokenGuard } from './guard/basic-token.guard';
 import { RefreshTokenGuard } from './guard/bearer-token.guard';
 import { RegisterUserDto } from './dto/register-user.dto';
 
+// 로그인 관련
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
